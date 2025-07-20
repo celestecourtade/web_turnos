@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Login Admin">
+  <h1 class="titulo">Panel Admin - Login</h1>
+
+  <form id="form-login">
+    <label>
+      Usuario:
+      <input type="text" name="username" required />
+    </label>
+
+    <label>
+      Contraseña:
+      <input type="password" name="password" required />
+    </label>
+
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <div id="mensaje-login"></div>
+
+  <script is:inline>
+    const form = document.getElementById('form-login');
+    const mensaje = document.getElementById('mensaje-login');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = form.username.value.trim();
+      const password = form.password.value.trim();
+
+      if(username === 'admin' && password === '1234') {
+        mensaje.textContent = '✅ Login exitoso! Redirigiendo...';
+        setTimeout(() => {
+          window.location.href = '/admin/dashboard';
+        }, 1000);
+      } else {
+        mensaje.textContent = '❌ Usuario o contraseña incorrectos';
+      }
+    });
+  </script>
+
+  <style>
+    .titulo {
+      text-align: center;
+    }
+
+    form {
+      max-width: 300px;
+      margin: auto;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 1rem;
+      background: #f9f9f9;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+
+    #mensaje-login {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</Layout>

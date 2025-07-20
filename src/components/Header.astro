@@ -16,7 +16,10 @@
         <a href="#Testimonio" class="nav-link">Testimonios</a>
         <a href="#Contacto" class="nav-link">Contacto</a>
       </div>
-      <button class="btn-turnos" type="button">Turnos</button>
+      <div class="nav-botones">
+        <a href="/turnos" class="btn-turnos">Turnos</a>
+        <a href="/admin" class="btn-login">Login</a>
+      </div>      
     </nav>
   </header>
   
@@ -125,5 +128,30 @@
     .btn-turnos:focus {
       background-color: #a01349;
     }
+
+    .nav-botones {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+    /* Botón Login (más sutil, tipo enlace con borde) */
+.btn-login {
+  background: none;
+  color: #222A3E;
+  font-weight: 600;
+  border: 1px solid #c2185b;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover,
+.btn-login:focus {
+  background-color: #c2185b;
+  color: white;
+}
 
   </style>
