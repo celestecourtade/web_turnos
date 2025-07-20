@@ -1,0 +1,26 @@
+---
+
+import '../css/global.css'; 
+const { title } = Astro.props;
+---
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title ? title : "Mi sitio"}</title>
+    <script src="https://kit.fontawesome.com/b0cf18c30b.js" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+
+    <main>
+      <slot /> <!-- Aquí se inserta el contenido de cada página -->
+    </main>
+
+    </body>
+    
+</html>

@@ -1,166 +1,163 @@
-
 ---
+import MainLayout from "../layouts/MainLayout.astro"
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Panel Admin - Menú Hamburguesa</title>
-    <style>
-      /* Reset */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<MainLayout>
+  <button id="btn-toggle-sidebar" aria-label="Toggle menu">&#9776;</button>
 
-      body, html {
-        height: 100%;
-        font-family: 'Archivo Black', sans-serif;
-        overflow-x: hidden;
-      }
+  <div class="dashboard-container">
+    <aside class="sidebar" id="sidebar">
+      <h2>Beauty Salon</h2>
+      <nav>
+        <ul>
+          <li><a href="/admin/dashboard">Inicio</a></li>
+          <li><a href="/admin/turnos">Turnos</a></li>
+          <li><a href="/admin/disponibilidad">Disponibilidad</a></li>
+          <li><a href="/admin/usuarios">Usuarios</a></li>
+          <li><a href="/">Volver a la página</a></li>
+          <li><a href="/admin/logout">Cerrar sesión</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-      /* Contenedor principal */
+    <main class="main-content">
+      <h1>Bienvenido al Panel de Administración</h1>
+      <p>Desde aquí podrás gestionar turnos, disponibilidad y usuarios.</p>
+    </main>
+  </div>
+
+  <!-- ESTILOS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Archivo Black', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .dashboard-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #222A3E;
+      color: white;
+      padding: 2rem 1rem;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    .sidebar h2 {
+      font-family: 'Decorative', cursive;
+      color: #c2185b;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 1.2rem;
+    }
+
+    .sidebar nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar nav ul li a:hover {
+      color: #c2185b;
+    }
+
+    main.main-content {
+      flex-grow: 1;
+      padding: 3rem 2rem;
+      background: #f9f9f9;
+      color: #222A3E;
+      overflow-y: auto;
+    }
+
+    main.main-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    main.main-content p {
+      font-size: 1.2rem;
+    }
+
+    #btn-toggle-sidebar {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 2.5rem;
+      background-color: #222A3E;
+      color: #c2185b;
+      border: none;
+      cursor: pointer;
+      z-index: 1200;
+      user-select: none;
+      padding: 0.2rem 0.7rem;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
       .dashboard-container {
-        display: flex;
-        height: 100vh;
+        flex-direction: column;
       }
 
-      /* Sidebar */
-      .sidebar {
-        width: 250px;
-        background-color: #222A3E;
-        color: white;
-        padding: 2rem 1rem;
-        transition: transform 0.3s ease;
-        user-select: none;
-      }
-      .sidebar h2 {
-        font-family: 'Decorative', cursive;
-        color: #c2185b;
-        margin-bottom: 2rem;
-      }
-      .sidebar nav ul {
-        list-style: none;
-      }
-      .sidebar nav ul li {
-        margin-bottom: 1.2rem;
-      }
-      .sidebar nav ul li a {
-        color: white;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 1.1rem;
-        transition: color 0.3s ease;
-      }
-      .sidebar nav ul li a:hover {
-        color: #c2185b;
-      }
-
-      /* Main content */
       main.main-content {
-        flex-grow: 1;
-        padding: 3rem 2rem;
-        background: #f9f9f9;
-        color: #222A3E;
-        overflow-y: auto;
-      }
-      main.main-content h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-      }
-      main.main-content p {
-        font-size: 1.2rem;
+        padding: 4rem 1rem 1rem 1rem;
       }
 
-      /* Botón hamburguesa */
       #btn-toggle-sidebar {
-        display: none;
+        display: block;
+      }
+
+      .sidebar {
         position: fixed;
-        top: 10px;
-        left: 10px;
-        font-size: 2.5rem;
-        background-color: #222A3E;
-        color: #c2185b;
-        border: none;
-        cursor: pointer;
-        z-index: 1200;
-        user-select: none;
-        padding: 0.2rem 0.7rem;
-        border-radius: 5px;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+        z-index: 1100;
+        padding-top: 4rem;
       }
 
-      /* Responsive para móviles */
-      @media (max-width: 768px) {
-        .dashboard-container {
-          flex-direction: column;
-        }
-
-        main.main-content {
-          padding: 4rem 1rem 1rem 1rem;
-        }
-
-        #btn-toggle-sidebar {
-          display: block;
-        }
-
-        .sidebar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          height: 100vh;
-          transform: translateX(-100%);
-          box-shadow: 2px 0 5px rgba(0,0,0,0.5);
-          z-index: 1100;
-          padding-top: 4rem;
-        }
-        .sidebar.active {
-          transform: translateX(0);
-        }
+      .sidebar.active {
+        transform: translateX(0);
       }
-    </style>
-  </head>
-  <body>
-    <button id="btn-toggle-sidebar" aria-label="Toggle menu">&#9776;</button>
+    }
+  </style>
 
-    <div class="dashboard-container">
-      <aside class="sidebar" id="sidebar">
-        <h2>Beauty Salon</h2>
-        <nav>
-          <ul>
-            <li><a href="/admin/dashboard">Inicio</a></li>
-            <li><a href="/admin/turnos">Turnos</a></li>
-            <li><a href="/admin/disponibilidad">Disponibilidad</a></li>
-            <li><a href="/admin/usuarios">Usuarios</a></li>
-            <li><a href="/">Volver a la página</a></li>
-            <li><a href="/admin/logout">Cerrar sesión</a></li>
-          </ul>
-        </nav>
-      </aside>
+  <!-- SCRIPT -->
+  <script type="module">
+    const btnToggle = document.getElementById('btn-toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
 
-      <main class="main-content">
-        <h1>Bienvenido al Panel de Administración</h1>
-        <p>Desde aquí podrás gestionar turnos, disponibilidad y usuarios.</p>
-      </main>
-    </div>
+    btnToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
 
-    <script type="module">
-      const btnToggle = document.getElementById('btn-toggle-sidebar');
-      const sidebar = document.getElementById('sidebar');
-
-      btnToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
+    sidebar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('active');
+        }
       });
-
-      // Cierra el menú cuando clickeas un link (solo en móvil)
-      sidebar.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          if (window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
-          }
-        });
-      });
-    </script>
-  </body>
-</html>
+    });
+  </script>
+</MainLayout>
