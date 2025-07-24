@@ -1,48 +1,64 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@prisma/prisma.service';
-import { Appointment } from '@prisma/client';
+import { PrismaService } from '@/prisma/prisma.service';
+import { CreateTurnoDto } from './dto/create-turno.dto';
+import { UpdateTurnoDto } from './dto/update-turno.dto';
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 @Injectable()
 export class TurnosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  // Crear un turno
-  async crearTurno(data: { userId: number; date: Date }): Promise<Appointment> {
-    return this.prisma.appointment.create({
+  async crearTurno(data: CreateTurnoDto) {
+    const cancelToken = uuidv4(); // genera token único
+  
+    const turnoCreado = await this.prisma.appointment.create({
       data: {
-        userId: data.userId,
-        date: data.date,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        telefono: data.telefono,
+        servicio: data.servicio,
+        date: new Date(data.date),
+        cancelToken,
       },
     });
+  
+    // Simular envío de email con link de cancelación:
+    console.log(`Link para cancelar turno: http://localhost:3001/turnos/cancel/${cancelToken}`);
+  
+    return turnoCreado;
+  }
+  
+  async obtenerTurnos() {
+    return this.prisma.appointment.findMany();
   }
 
-  // Listar todos los turnos
-  async obtenerTurnos(): Promise<Appointment[]> {
-    return this.prisma.appointment.findMany({
-      include: { user: true },
-    });
-  }
-
-  // Cancelar (eliminar) un turno por id
-  async cancelarTurno(id: number): Promise<Appointment> {
-    return this.prisma.appointment.delete({
-      where: { id },
-    });
-  }
-
-  // Obtener turno por ID
-  async obtenerTurnoPorId(id: number): Promise<Appointment | null> {
+  async obtenerTurnoPorId(id: number) {
     return this.prisma.appointment.findUnique({
       where: { id },
-      include: { user: true },
     });
   }
 
-  // Actualizar turno
-  async actualizarTurno(id: number, data: { date?: Date }): Promise<Appointment> {
+  // Este es el método nuevo que buscás:
+  async obtenerTurnoPorCancelToken(token: string) {
+    return this.prisma.appointment.findUnique({
+      where: { cancelToken: token },
+    });
+  }
+
+  async actualizarTurno(id: number, data: Partial<UpdateTurnoDto & { date: Date }>) {
     return this.prisma.appointment.update({
       where: { id },
       data,
     });
   }
+
+  async cancelarTurno(id: number) {
+    return this.prisma.appointment.delete({
+      where: { id },
+    });
+  }
 }
+
+

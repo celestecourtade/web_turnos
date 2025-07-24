@@ -1,9 +1,19 @@
-import { IsInt, IsDateString } from 'class-validator';
+import { IsString, IsDateString, MinLength } from 'class-validator';
 
 export class CreateTurnoDto {
-  @IsInt()
-  userId: number;
+  @IsString()
+  nombre: string;
 
-  @IsDateString()
+  @IsString()
+  apellido: string;
+
+  @IsString()
+  @MinLength(8)
+  telefono: string;
+
+  @IsString()
+  servicio: string;
+
+  @IsDateString()       // Aquí la fecha es string en formato ISO
   date: string;
 }
