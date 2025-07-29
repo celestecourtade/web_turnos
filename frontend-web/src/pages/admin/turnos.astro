@@ -203,5 +203,42 @@ import MainLayout from "../../layouts/MainLayout.astro"
         }
       });
     });
-  </script>
+
+
+  const token = localStorage.getItem("token"); // o como lo tengas guardado
+  const tbody = document.querySelector("tbody");
+
+  async function cargarTurnos() {
+    try {
+      const res = await fetch("http://localhost:3001/turnos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Error al obtener turnos");
+
+      const turnos = await res.json();
+
+      tbody.innerHTML = ""; // Limpiamos el tbody
+
+      turnos.forEach(turno => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${turno.nombre}</td>
+          <td>${turno.fecha}</td>
+          <td>${turno.hora}</td>
+          <td><button class="action-btn">Eliminar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (error) {
+      console.error("No se pudieron cargar los turnos:", error);
+      tbody.innerHTML = "<tr><td colspan='4'>Error al cargar turnos</td></tr>";
+    }
+  }
+
+  cargarTurnos();
+</script>
+
 </MainLayout>

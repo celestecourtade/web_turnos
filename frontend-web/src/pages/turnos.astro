@@ -22,11 +22,22 @@ import Layout from '../layouts/Layout.astro';
         type="tel" 
         name="telefono" 
         required 
-        pattern="^\d{8,}$" 
+        pattern="[0-9]{8,}" 
         placeholder="Sólo números, mínimo 8 dígitos"
         title="Ingrese un número válido con al menos 8 dígitos"
       />
     </label>
+
+    <label>
+      Email:
+      <input 
+        type="email" 
+        name="email" 
+        required 
+        placeholder="tu@correo.com"
+      />
+    </label>
+    
 
     <label>
       Servicio:
@@ -38,14 +49,10 @@ import Layout from '../layouts/Layout.astro';
       </select>
     </label>
 
+    <!-- 🎯 Input unificado de fecha y hora -->
     <label>
-      Fecha:
-      <input type="date" name="fecha" required min="" />
-    </label>
-
-    <label>
-      Hora:
-      <input type="time" name="hora" required />
+      Elegí día y horario:
+      <input id="datetime-picker" name="datetime" required />
     </label>
 
     <button type="submit">Reservar turno</button>
@@ -53,35 +60,55 @@ import Layout from '../layouts/Layout.astro';
 
   <div id="mensaje-turno"></div>
 
+  <!-- ✅ FLATPICKR: Estilos y script -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <script is:inline>
-    const form = document.getElementById('form-turno');
-    const mensaje = document.getElementById('mensaje-turno');
-    const fechaInput = form.querySelector('input[name="fecha"]');
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configurar Flatpickr
+      flatpickr("#datetime-picker", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        minDate: "today",
+        time_24hr: true,
+        minuteIncrement: 30,
+      });
 
-    // Poner fecha mínima hoy para no aceptar fechas pasadas
-    const hoy = new Date().toISOString().split('T')[0];
-    fechaInput.min = hoy;
+      const form = document.getElementById('form-turno');
+      const mensaje = document.getElementById('mensaje-turno');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-      if (!form.checkValidity()) {
-        mensaje.textContent = '❌ Por favor completa correctamente todos los campos.';
-        return;
-      }
+        [...form.elements].forEach(el => {
+          if (!el.checkValidity()) {
+            el.style.border = '2px solid red';
+            console.log(`❌ Campo inválido → name: ${el.name}, value: "${el.value}"`);
+          } else {
+            el.style.border = '';
+          }
+        });
 
-      const formData = new FormData(form);
-      const data = {
+        if (!form.checkValidity()) {
+          mensaje.textContent = '❌ Por favor completa correctamente todos los campos.';
+          return;
+        }
+
+        const formData = new FormData(form);
+        const [fecha, hora] = formData.get('datetime').split(' ');
+
+        const data = {
         nombre: formData.get('nombre'),
         apellido: formData.get('apellido'),
         telefono: formData.get('telefono'),
+        email: formData.get('email'), 
         servicio: formData.get('servicio'),
-        fecha: formData.get('fecha'),
-        hora: formData.get('hora')
-      };
+        date: formData.get('datetime')  
+        };
 
-      try {
-        const res = await fetch('http://localhost:4321/turnos', {
+        try {
+          const res = await fetch('http://localhost:3001/turnos', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -89,19 +116,19 @@ import Layout from '../layouts/Layout.astro';
           body: JSON.stringify(data)
         });
 
-        const result = await res.json();
 
-        if (res.ok) {
-          mensaje.textContent = '✅ Turno reservado con éxito';
-          form.reset();
-          // Resetear fecha mínima para hoy nuevamente
-          fechaInput.min = hoy;
-        } else {
-          mensaje.textContent = '❌ Error: ' + (result.message || 'al reservar turno');
+          const result = await res.json();
+
+          if (res.ok) {
+            mensaje.textContent = '✅ Email de confirmacion enviado, revise su correo electronico';
+            form.reset();
+          } else {
+            mensaje.textContent = '❌ Error: ' + (result.message || 'al reservar turno');
+          }
+        } catch (err) {
+          mensaje.textContent = '❌ Error de conexión con el servidor';
         }
-      } catch (err) {
-        mensaje.textContent = '❌ Error de conexión con el servidor';
-      }
+      });
     });
   </script>
 
