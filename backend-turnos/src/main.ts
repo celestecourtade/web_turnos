@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // Habilitar CORS para permitir peticiones desde el frontend (Astro en localhost:3000)
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:4321',
   });
 
   const port = configService.get<number>('PORT') || 3001;

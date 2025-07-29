@@ -1,4 +1,4 @@
-import { IsString, IsDateString, MinLength } from 'class-validator';
+import { IsString, IsDateString, MinLength, IsEmail } from 'class-validator';
 
 export class CreateTurnoDto {
   @IsString()
@@ -11,9 +11,12 @@ export class CreateTurnoDto {
   @MinLength(8)
   telefono: string;
 
+  @IsEmail() // ✅ agregá esta línea
+  email: string;
+
   @IsString()
   servicio: string;
 
-  @IsDateString()       // Aquí la fecha es string en formato ISO
+  @IsDateString()      
   date: string;
 }

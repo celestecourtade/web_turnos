@@ -3,12 +3,14 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { CreateTurnoDto } from './dto/create-turno.dto';
 import { UpdateTurnoDto } from './dto/update-turno.dto';
 import { v4 as uuidv4 } from 'uuid';
-
-
+import { MailService } from '@/mail/mail.service'; 
 
 @Injectable()
 export class TurnosService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService, // ✅ inyectamos el servicio de mails
+  ) {}
 
   async crearTurno(data: CreateTurnoDto) {
     const cancelToken = uuidv4(); // genera token único
@@ -20,12 +22,18 @@ export class TurnosService {
         telefono: data.telefono,
         servicio: data.servicio,
         date: new Date(data.date),
+        email: data.email, // ✅ agregamos el email
         cancelToken,
       },
     });
   
-    // Simular envío de email con link de cancelación:
-    console.log(`Link para cancelar turno: http://localhost:3001/turnos/cancel/${cancelToken}`);
+    // 🔍 Intentamos enviar el mail y mostramos errores si los hay
+    try {
+      await this.mailService.sendCancelacion(data.email, cancelToken);
+      console.log('✅ Correo enviado correctamente a:', data.email);
+    } catch (error) {
+      console.error('❌ Error al enviar el correo de cancelación:', error);
+    }
   
     return turnoCreado;
   }
@@ -40,7 +48,6 @@ export class TurnosService {
     });
   }
 
-  // Este es el método nuevo que buscás:
   async obtenerTurnoPorCancelToken(token: string) {
     return this.prisma.appointment.findUnique({
       where: { cancelToken: token },
@@ -60,5 +67,3 @@ export class TurnosService {
     });
   }
 }
-
-
