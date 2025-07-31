@@ -16,6 +16,8 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+type UpdatedAppointment = Omit<UpdateAppointmentDto, 'date'> & { date?: Date };
+
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
@@ -46,10 +48,15 @@ export class AppointmentsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateAppointmentDto,
   ) {
-    const updatedAppointment: any = { ...body };
-    if (body.date) {
-      updatedAppointment.date = new Date(body.date);
-    }
+    // Desestructuramos date por separado
+    const { date, ...rest } = body;
+  
+    // Construimos el objeto actualizado, transformando date si existe
+    const updatedAppointment: Partial<UpdatedAppointment> = {
+      ...rest,
+      ...(date ? { date: new Date(date) } : {}),
+    };
+  
     return this.appointmentsService.updateAppointment(id, updatedAppointment);
   }
 

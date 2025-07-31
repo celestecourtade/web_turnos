@@ -59,12 +59,16 @@ export class AppointmentsService {
   }
 
   // ✅ Actualizar turno
-  async updateAppointment(id: number, data: Partial<UpdateAppointmentDto & { date: Date }>) {
+  async updateAppointment(
+    id: number,
+    data: Partial<Omit<UpdateAppointmentDto, 'date'> & { date?: string | Date }>
+  ) {
     return this.prisma.appointment.update({
       where: { id },
       data,
     });
   }
+  
 
   // ✅ Cancelar (eliminar) un turno
   async cancelAppointment(id: number) {
