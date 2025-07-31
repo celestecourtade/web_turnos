@@ -1,22 +1,22 @@
 import { IsOptional, IsString, IsDateString, MinLength } from 'class-validator';
 
-export class UpdateTurnoDto {
+export class UpdateAppointmentDto {
   @IsOptional()
   @IsString()
-  nombre?: string;
+  firstName?: string;
 
   @IsOptional()
   @IsString()
-  apellido?: string;
+  lastName?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(8)
-  telefono?: string;
+  phone?: string;
 
   @IsOptional()
   @IsString()
-  servicio?: string;
+  service?: string;
 
   @IsOptional()
   @IsDateString()

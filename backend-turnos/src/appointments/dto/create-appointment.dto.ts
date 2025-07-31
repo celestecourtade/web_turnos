@@ -1,22 +1,22 @@
 import { IsString, IsDateString, MinLength, IsEmail } from 'class-validator';
 
-export class CreateTurnoDto {
+export class CreateAppointmentDto {
   @IsString()
-  nombre: string;
+  firstName: string;
 
   @IsString()
-  apellido: string;
+  lastName: string;
 
   @IsString()
   @MinLength(8)
-  telefono: string;
+  phone: string;
 
-  @IsEmail() // ✅ agregá esta línea
+  @IsEmail() // ✅ validación email
   email: string;
 
   @IsString()
-  servicio: string;
+  service: string;
 
-  @IsDateString()      
+  @IsDateString()
   date: string;
 }
