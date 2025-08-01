@@ -99,22 +99,24 @@ import Layout from '../layouts/Layout.astro';
         const [fecha, hora] = formData.get('datetime').split(' ');
 
         const data = {
-        nombre: formData.get('nombre'),
-        apellido: formData.get('apellido'),
-        telefono: formData.get('telefono'),
-        email: formData.get('email'), 
-        servicio: formData.get('servicio'),
-        date: formData.get('datetime')  
-        };
+        firstName: formData.get('nombre'),
+        lastName: formData.get('apellido'),
+        phone: formData.get('telefono'),
+        email: formData.get('email'),
+        service: formData.get('servicio'),
+        date: formData.get('datetime')
+      };
+
 
         try {
-          const res = await fetch('http://localhost:3001/turnos', {
+          const res = await fetch('http://localhost:3001/appointments', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(data)
         });
+
 
 
           const result = await res.json();

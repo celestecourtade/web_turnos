@@ -30,12 +30,11 @@ export class AppointmentsService {
 
     // 🔍 Intentamos enviar el mail y mostramos errores si los hay
     try {
-      await this.mailService.sendCancelacion(data.email, cancelToken);
-      console.log('✅ Correo enviado correctamente a:', data.email);
+      await this.mailService.sendCancellation(data.email, cancelToken);
+      console.log('✅ Email sent to:', data.email);
     } catch (error) {
-      console.error('❌ Error al enviar el correo de cancelación:', error);
+      console.error('❌ Error sending cancellation email:', error);
     }
-
     return createdAppointment;
   }
 
