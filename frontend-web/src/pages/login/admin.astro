@@ -1,0 +1,134 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Login Admin">
+  <h1 class="titulo">Panel Admin - Login</h1>
+
+  <form id="form-login">
+    <label>
+      Usuario:
+      <input type="text" name="username" required />
+    </label>
+
+    <label>
+      Contraseña:
+      <input type="password" name="password" required />
+    </label>
+
+    <button type="submit">Ingresar</button>
+  </form>
+
+  <p style="text-align:center; margin-top: 1rem;">
+    <a href="/login/recuperar">¿Olvidaste tu contraseña?</a>
+  </p>
+
+  <div id="mensaje-login"></div>
+
+  <script is:inline>
+    const form = document.getElementById('form-login');
+    const mensaje = document.getElementById('mensaje-login');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = form.username.value.trim();
+      const password = form.password.value.trim();
+
+      if (!username || !password) {
+        mensaje.textContent = '❌ Por favor completa todos los campos';
+        return;
+      }
+
+      mensaje.textContent = '⏳ Iniciando sesión...';
+
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          mensaje.textContent = `❌ ${err.message || 'Error en el login'}`;
+          return;
+        }
+
+        const data = await res.json();
+
+        // Guardar token en localStorage o cookies según tu implementación
+        localStorage.setItem('token', data.token);
+
+        mensaje.textContent = '✅ Login exitoso! Redirigiendo...';
+        setTimeout(() => {
+          window.location.href = '/admin/dashboard'; // Ajusta la ruta si es necesario
+        }, 1000);
+
+      } catch (error) {
+        mensaje.textContent = `❌ Error de conexión: ${error.message}`;
+      }
+    });
+  </script>
+
+  <style>
+    .titulo {
+      text-align: center;
+    }
+
+    form {
+      max-width: 300px;
+      margin: auto;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 1rem;
+      background: #f9f9f9;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005f99;
+    }
+
+    #mensaje-login {
+      margin-top: 1rem;
+      text-align: center;
+      font-weight: bold;
+      min-height: 1.5em;
+      color: red;
+    }
+
+    p a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    p a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</Layout>

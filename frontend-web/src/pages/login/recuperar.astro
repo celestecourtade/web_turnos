@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout>
+    <form id="form-recuperar">
+        <label>
+          Ingresá tu email:
+          <input type="email" name="email" required />
+        </label>
+        <button type="submit">Enviar enlace</button>
+      </form>
+      <div id="mensaje"></div>
+      
+      <script is:inline>
+        const form = document.getElementById('form-recuperar');
+        const mensaje = document.getElementById('mensaje');
+      
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+      
+          const email = form.email.value.trim();
+          mensaje.textContent = '⏳ Enviando...';
+      
+          try {
+            const res = await fetch('http://localhost:3000/auth/forgot-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+      
+            const data = await res.json();
+            mensaje.textContent = res.ok
+              ? '✅ Revisa tu correo para recuperar tu contraseña.'
+              : '❌ ' + (data.message || 'Error al enviar correo');
+          } catch (err) {
+            mensaje.textContent = '❌ Error al conectar con el servidor';
+          }
+        });
+      </script>
+      
+
+
+
+</Layout>
