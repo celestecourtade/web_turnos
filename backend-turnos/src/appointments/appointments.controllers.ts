@@ -1,16 +1,5 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Delete,
-  Patch,
-  Body,
-  Param,
-  ParseIntPipe,
-  NotFoundException,
-  HttpCode,
-  UseGuards,
-} from '@nestjs/common';
+  Controller,Get,Post, Delete, Patch,Body, Param, ParseIntPipe, NotFoundException, HttpCode, UseGuards,} from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
